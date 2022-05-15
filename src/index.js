@@ -71,25 +71,33 @@ app.post("/api/register", async (req, res) => {
 app.post("/api/authenticate", async (req, res) => {
     const { email, password } = req.body;
 
-    const user = await prisma.user.findUnique({
-        where: {
-            email: email,
-        },
-    });
-
-    if (!user) {
-        return res.json(errorMessage("Invalid email or password"));
+    if (!email || !password) {
+        return res.status(500).json(errorMessage("Invalid email or password"));
     }
 
-    if (await bcrypt.compare(password, user.password)) {
-        const token = jwt.sign(
-            {
-                id: user.id,
-                email: user.email,
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                email: email,
             },
-            JWT_SECRET
-        );
-        return res.json({ status: "ok", data: token });
+        });
+
+        if (!user) {
+            return res.json(errorMessage("Invalid email or password"));
+        }
+
+        if (await bcrypt.compare(password, user.password)) {
+            const token = jwt.sign(
+                {
+                    id: user.id,
+                    email: user.email,
+                },
+                JWT_SECRET
+            );
+            return res.json({ status: "ok", data: token });
+        }
+    } catch (e) {
+        return res.status(500).json(errorMessage("Some error occured"));
     }
 
     return res.json(errorMessage("Invalid email or password"));
@@ -166,39 +174,44 @@ app.post("/api/unfollow/:id", authMiddleware, async (req, res) => {
 });
 
 app.get("/api/user", authMiddleware, async (req, res) => {
-    const user = await prisma.user.findUnique({
-        where: {
-            id: req.user.id,
-        },
-        select: {
-            id: true,
-            email: true,
-            following: {
-                select: {
-                    id: true,
-                    email: true,
+    try {
+        const user = await prisma.user.findUnique({
+            where: {
+                id: req.user.id,
+            },
+            select: {
+                id: true,
+                email: true,
+                following: {
+                    select: {
+                        id: true,
+                        email: true,
+                    },
+                },
+                followedBy: {
+                    select: {
+                        id: true,
+                        email: true,
+                    },
+                },
+                _count: {
+                    select: {
+                        following: true,
+                        followedBy: true,
+                    },
                 },
             },
-            followedBy: {
-                select: {
-                    id: true,
-                    email: true,
-                },
-            },
-            _count: {
-                select: {
-                    following: true,
-                    followedBy: true,
-                },
-            },
-        },
-    });
+        });
 
-    if (!user) {
-        return res.status(500).json(errorMessage("User not found"));
+        if (!user) {
+            return res.status(500).json(errorMessage("User not found"));
+        }
+
+        return res.send(user);
+    } catch (e) {
+        return res.status(500).json(errorMessage("Some error occured"));
     }
-
-    res.send(user);
+    return res.status(500).json(errorMessage("Some error occured"));
 });
 
 app.get("/api/users", async (req, res) => {
@@ -364,32 +377,37 @@ app.get("/api/posts/:id", async (req, res) => {
 });
 
 app.get("/api/all_posts", authMiddleware, async (req, res) => {
-    const posts = await prisma.user.findUnique({
-        where: {
-            id: req.user.id,
-        },
-        select: {
-            posts: {
-                select: {
-                    postId: true,
-                    title: true,
-                    description: true,
-                    createdAt: true,
-                    comments: true,
-                    _count: {
-                        select: {
-                            likes: true,
+    try {
+        const posts = await prisma.user.findUnique({
+            where: {
+                id: req.user.id,
+            },
+            select: {
+                posts: {
+                    select: {
+                        postId: true,
+                        title: true,
+                        description: true,
+                        createdAt: true,
+                        comments: true,
+                        _count: {
+                            select: {
+                                likes: true,
+                            },
                         },
                     },
-                },
-                orderBy: {
-                    createdAt: "asc",
+                    orderBy: {
+                        createdAt: "asc",
+                    },
                 },
             },
-        },
-    });
+        });
 
-    res.send(posts);
+        return res.send(posts);
+    } catch (e) {
+        return res.status(500).json(errorMessage("Some error occured"));
+    }
+    return res.status(500).json(errorMessage("Some error occured"));
 });
 
 const PORT = process.env.PORT || 3000;
