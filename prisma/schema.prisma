@@ -3,22 +3,46 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  email String  @unique
-  id    Int     @id @default(autoincrement())
-  name  String?
-  posts Post[]
+  id         Int       @id @default(autoincrement())
+  email      String    @unique
+  password   String
+  followedBy User[]    @relation("UserFollows", references: [id])
+  following  User[]    @relation("UserFollows", references: [id])
+  posts      Post[]
+  comments   Comment[]
+  likes      Like[]
 }
 
 model Post {
-  authorId  Int?
-  content   String?
-  id        Int     @id @default(autoincrement())
-  published Boolean @default(false)
-  title     String
-  author    User?   @relation(fields: [authorId], references: [id])
+  postId      Int       @id @default(autoincrement())
+  description String?
+  createdAt   DateTime  @default(now())
+  title       String
+  authorId    Int?
+  author      User?     @relation(fields: [authorId], references: [id])
+  likes       Like[]
+  comments    Comment[]
+}
+
+model Like {
+  post   Post @relation(fields: [postId], references: [postId])
+  postId Int
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  @@id([postId, userId])
+}
+
+model Comment {
+  commentId Int    @id @default(autoincrement())
+  comment   String
+  postId    Int
+  post      Post   @relation(fields: [postId], references: [postId])
+  author    User   @relation(fields: [authorId], references: [id])
+  authorId  Int
 }

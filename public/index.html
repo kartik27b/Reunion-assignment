@@ -1,116 +1,64 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <title>Prisma example</title>
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/tailwindcss/dist/tailwind.min.css"
-    />
-    <style type="text/css">
-      .loader,
-      .loader:after {
-        border-radius: 50%;
-        width: 10em;
-        height: 10em;
-      }
-      .loader {
-        top: 30px;
-        right: 30px;
-        font-size: 3px;
-        position: fixed;
-        text-indent: -9999em;
-        border-top: 1.1em solid rgba(255, 255, 255, 0.2);
-        border-right: 1.1em solid rgba(255, 255, 255, 0.2);
-        border-bottom: 1.1em solid rgba(255, 255, 255, 0.2);
-        border-left: 1.1em solid #ffffff;
-        -webkit-transform: translateZ(0);
-        -ms-transform: translateZ(0);
-        transform: translateZ(0);
-        -webkit-animation: load8 1.1s infinite linear;
-        animation: load8 1.1s infinite linear;
-      }
-      @-webkit-keyframes load8 {
-        0% {
-          -webkit-transform: rotate(0deg);
-          transform: rotate(0deg);
-        }
-        100% {
-          -webkit-transform: rotate(360deg);
-          transform: rotate(360deg);
-        }
-      }
-      @keyframes load8 {
-        0% {
-          -webkit-transform: rotate(0deg);
-          transform: rotate(0deg);
-        }
-        100% {
-          -webkit-transform: rotate(360deg);
-          transform: rotate(360deg);
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <div class="py-24" style="background: rgb(12, 52, 75)">
-      <div class="container mx-auto px-6">
-        <h2 class="text-4xl font-bold mb-8 text-white">
-          Prisma example
-        </h2>
-        <button
-          onclick="getApi('')"
-          class="fetch-button focus:outline-none bg-white font-bold rounded-full py-4 px-8 my-2 shadow-lg uppercase tracking-wider"
-        >
-          Check API status
-        </button>
-        <button
-          onclick="getApi('seed')"
-          class="fetch-button focus:outline-none bg-white font-bold rounded-full py-4 px-8 my-2 shadow-lg uppercase tracking-wider"
-        >
-          Seed data
-        </button>
-        <button
-          onclick="getApi('feed')"
-          class="fetch-button focus:outline-none bg-white font-bold rounded-full py-4 px-8 my-2 shadow-lg uppercase tracking-wider"
-        >
-          Load feed
-        </button>
-        <div class="loader invisible"></div>
-      </div>
-    </div>
+    <head>
+        <title>Reunion internship</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <style type="text/tailwindcss">
+            @layer components {
+                /* .links {
+                    @apply px-4 py-2 bg-black mx-4 my-3 text-sm bg-slate-700 text-white font-light rounded-lg;
+                } */
+                .links {
+                    @apply text-sm;
+                }
+                .test {
+                    @apply bg-slate-700 text-white px-3 py-1 rounded-md;
+                }
+                div {
+                    @apply my-2;
+                }
 
-    <div class="container mx-auto">
-      <pre
-        class="response-container text-white px-8 pt-6 pb-8 bg-black shadow-md invisible"
-      ></pre>
-    </div>
+                ul {
+                    @apply mx-6;
+                }
 
-    <script>
-      const responseContainer = document.querySelector('.response-container')
-      const loader = document.querySelector('.loader')
-      function renderResponse(res) {
-        responseContainer.textContent = JSON.stringify(res, null, 2)
-      }
+                li {
+                    /* @apply  */
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <h1 class="text-md font-semibold my-3">KARTIK BHATIA - kabby272001@gmail.com</h1>
+        <div class="links">POST <span class="test">/api/register</span> registers a new user</div>
+        <div class="ml-5 mb-2">request body { "email": "user", "password": "pass" }</div>
+        <div class="links">
+            POST <span class="test">/api/authenticate</span> should perform user authentication and return a JWT token.
+            <br />
+            <div class="mx-6 my-2">
+                Sample email and passwords
 
-      const getApi = endpoint => {
-        loader.classList.remove('invisible')
-        fetch(`/api/${endpoint}`)
-          .then(function(response) {
-            return response.json()
-          })
-          .then(function(response) {
-            renderResponse(response)
-            responseContainer.classList.remove('invisible')
-            loader.classList.add('invisible')
-          })
-          .catch(function(err) {
-            responseContainer.classList.remove('invisible')
-            responseContainer.textContent = 'Error fetching'
-          })
-          .finally(function() {
-            loader.classList.add('invisible')
-          })
-      }
-    </script>
-  </body>
+                <ul>
+                    <li>{ "email": "user1", "password": "pass1" }</li>
+                    <li>{ "email": "user2", "password": "pass2" }</li>
+                    <li>{ "email": "user3", "password": "pass3" }</li>
+                </ul>
+            </div>
+        </div>
+        <div class="links">POST <span class="test">/api/follow/{id}</span> authenticated user would follow user with {id}</div>
+        <div class="links">POST <span class="test">/api/unfollow/{id}</span> authenticated user would unfollow a user with {id}</div>
+        <div class="links">GET <span class="test">/api/user</span> should authenticate the request and return the respective user profile.</div>
+        <div class="links">POST <span class="test">api/posts/</span> would add a new post created by the authenticated user.</div>
+        <div class="links">DELETE <span class="test">api/posts/{id}</span> would delete post with {id} created by the authenticated user.</div>
+        <div class="links">POST <span class="test">/api/like/{id}</span> would like the post with {id} by the authenticated user.</div>
+        <div class="links">POST <span class="test">/api/unlike/{id}</span> would unlike the post with {id} by the authenticated user.</div>
+        <div class="links">POST <span class="test">/api/comment/{id}</span> add comment for post with {id} by the authenticated user.</div>
+        <div class="links">GET <span class="test">api/posts/{id}</span> would return a single post with {id} populated with its number of likes and comments</div>
+        <div class="links">GET <span class="test">/api/all_posts</span> would return all posts created by authenticated user sorted by post time.</div>
+
+        <div class="bg-red-600 text-white px-3 py-2 mx-3">
+            NOTE** Please pass jwt token in request header for authenticated requests <br />
+            Authorization: Bearer + Token
+        </div>
+    </body>
 </html>

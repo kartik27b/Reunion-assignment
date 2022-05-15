@@ -8,3 +8,5 @@
 curl https://codeload.github.com/prisma/prisma-examples/tar.gz/latest | tar -xz --strip=2 prisma-examples-latest/deployment-platforms/heroku
 cd heroku
 ```
+
+when deploying change mysql to postgres
