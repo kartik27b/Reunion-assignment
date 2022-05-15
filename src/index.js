@@ -12,7 +12,6 @@ const app = express();
 app.use(bodyParser.json());
 app.use(express.static("public"));
 
-// remove this route
 app.get("/api", (req, res) => {
     res.json({ running: true });
 });
